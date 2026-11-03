@@ -98,6 +98,18 @@
             margin-bottom: 40px;
         }
 
+        .folder-section {
+            margin-bottom: 40px;
+        }
+
+        .folder-title {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding: 0 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
         .file-card {
             background: white;
             border-radius: 12px;
@@ -282,12 +294,12 @@
 
         function getFileExtension(filename) {
             const lower = filename.toLowerCase();
-            // Handle multi-part zip files: name.zip.001 -> zip
-            if (lower.endsWith('.zip.001') || lower.match(/\.zip\.\d{3}$/)) {
+            // Handle multi-part zip files: name.zip.001, name.zip.0001 -> zip
+            if (lower.endsWith('.zip.001') || lower.match(/\.zip\.\d{3,}$/)) {
                 return 'zip';
             }
-            // Handle other multi-part archives: name.rar.001, name.7z.001
-            const multiPartMatch = lower.match(/\.(rar|7z|tar|gz)\.\d{3}$/);
+            // Handle other multi-part archives: name.rar.001, name.7z.0001, etc.
+            const multiPartMatch = lower.match(/\.(rar|7z|tar|gz)\.\d{3,}$/);
             if (multiPartMatch) {
                 return multiPartMatch[1];
             }
@@ -324,29 +336,65 @@
                 return;
             }
 
-            container.innerHTML = filesToRender.map(file => {
-                const type = getFileType(file.name);
-                const icon = icons[type] || icons.other;
-                const size = formatFileSize(file.size);
+            // Group files by folder
+            const folders = new Map();
+            const rootFiles = [];
+            
+            filesToRender.forEach(file => {
+                const parts = file.name.split('/');
+                if (parts.length > 1) {
+                    const folder = parts[0];
+                    if (!folders.has(folder)) {
+                        folders.set(folder, []);
+                    }
+                    folders.get(folder).push(file);
+                } else {
+                    rootFiles.push(file);
+                }
+            });
 
-                return `
-                    <div class="file-card">
-                        <div class="file-icon ${type}">
-                            ${icon}
-                        </div>
-                        <div class="file-info">
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-meta">
-                                <span>📊 ${size}</span>
-                                <span>📄 ${file.name.split('.').pop().toUpperCase()}</span>
-                            </div>
-                        </div>
-                        <a href="${file.downloadPath}" class="download-btn" download>
-                            ⬇ Download
-                        </a>
+            let html = '';
+            
+            // Render root files first
+            if (rootFiles.length > 0) {
+                html += '<div class="folder-section"><h2 class="folder-title">📁 Root</h2><div class="files-grid">';
+                html += rootFiles.map(file => renderFileCard(file)).join('');
+                html += '</div></div>';
+            }
+            
+            // Render each folder
+            folders.forEach((files, folderName) => {
+                html += `<div class="folder-section"><h2 class="folder-title">📁 ${folderName}</h2><div class="files-grid">`;
+                html += files.map(file => renderFileCard(file)).join('');
+                html += '</div></div>';
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function renderFileCard(file) {
+            const type = getFileType(file.name);
+            const icon = icons[type] || icons.other;
+            const size = formatFileSize(file.size);
+            const displayName = file.name.split('/').pop();
+            
+            return `
+                <div class="file-card">
+                    <div class="file-icon ${type}">
+                        ${icon}
                     </div>
-                `;
-            }).join('');
+                    <div class="file-info">
+                        <div class="file-name" title="${file.name}">${displayName}</div>
+                        <div class="file-meta">
+                            <span>📊 ${size}</span>
+                            <span>📄 ${displayName.split('.').pop().toUpperCase()}</span>
+                        </div>
+                    </div>
+                    <a href="${file.downloadPath}" class="download-btn" download>
+                        ⬇ Download
+                    </a>
+                </div>
+            `;
         }
 
         // ============================================
