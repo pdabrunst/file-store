@@ -1,0 +1,50 @@
+name: Auto-generate files manifest
+
+on:
+  schedule:
+    - cron: '*/1 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install zip/unzip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip unzip
+
+      - name: Split large files
+        run: |
+          python3 split-large-files.py
+
+      - name: Generate files manifest
+        run: |
+          python3 generate-manifest.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if git diff --quiet files/files.json; then
+            echo "No changes to files.json"
+          else
+            git add files/files.json
+            git commit -m "Auto-update files manifest [skip ci]"
+            git push
+          fi
