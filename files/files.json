@@ -3,5 +3,20 @@
     "name": "hermes.sh",
     "size": 8180,
     "type": "other"
+  },
+  {
+    "name": "large_folder/large_folder.zip",
+    "size": 99614720,
+    "type": "archive"
+  },
+  {
+    "name": "large_folder/large_folder.zip.002",
+    "size": 99614720,
+    "type": "archive"
+  },
+  {
+    "name": "large_folder/large_folder.zip.003",
+    "size": 10549855,
+    "type": "archive"
   }
 ]

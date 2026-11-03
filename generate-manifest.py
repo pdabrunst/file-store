@@ -7,6 +7,10 @@ import sys
 
 def get_file_type(filename):
     ext = filename.split('.')[-1].lower() if '.' in filename else ''
+    # Handle multi-part files: name.zip.001, name.rar.002, etc.
+    parts = filename.lower().split('.')
+    if len(parts) >= 3 and parts[-2] in ('zip', 'rar', '7z', 'tar', 'gz') and parts[-1].isdigit():
+        return 'archive'
     types = {
         'image': ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'ico'],
         'document': ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf', 'odt'],

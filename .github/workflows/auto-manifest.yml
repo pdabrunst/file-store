@@ -23,15 +23,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install zip/unzip
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y zip unzip
-
-      - name: Split large files
-        run: |
-          python3 split-large-files.py
-
       - name: Generate files manifest
         run: |
           python3 generate-manifest.py
@@ -41,10 +32,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          if git diff --quiet files/files.json; then
-            echo "No changes to files.json"
+          git add files/
+          
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
           else
-            git add files/files.json
             git commit -m "Auto-update files manifest [skip ci]"
             git push
           fi
