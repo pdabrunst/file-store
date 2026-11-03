@@ -3,5 +3,15 @@
     "name": "hermes.sh",
     "size": 8180,
     "type": "other"
+  },
+  {
+    "name": "test_folder/file1.txt",
+    "size": 6,
+    "type": "document"
+  },
+  {
+    "name": "test_folder/subdir/file2.txt",
+    "size": 6,
+    "type": "document"
   }
 ]
