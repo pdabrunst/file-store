@@ -366,7 +366,7 @@
                 </div>`;
             }
             
-            // Render subfolders as clickable cards
+            // Render subfolders as standard file cards
             const sortedFolders = Array.from(subfolders).sort();
             if (sortedFolders.length > 0) {
                 html += '<div class="files-grid">';
@@ -383,7 +383,7 @@
                                     <span>📂 Folder</span>
                                 </div>
                             </div>
-                            <button onclick="navigateTo('${folderPath}')" class="download-btn" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); margin-top: auto; cursor: pointer; border: none; font-size: 1rem; padding: 12px 24px;">
+                            <button onclick="navigateTo('${folderPath}')" class="download-btn" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">
                                 📂 Open
                             </button>
                         </div>
