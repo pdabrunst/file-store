@@ -125,21 +125,6 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .folder-card {
-            cursor: pointer;
-            background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%);
-            border: 3px solid #e17055;
-        }
-
-        .folder-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
-        }
-
-        .folder-card .file-icon {
-            font-size: 3rem;
-        }
-
         .file-icon {
             width: 60px;
             height: 60px;
@@ -158,6 +143,7 @@
         .file-icon.archive { background: #fdcb6e; }
         .file-icon.code { background: #55efc4; }
         .file-icon.other { background: #dfe6e9; }
+        .file-icon.folder { background: #fdcb6e; }
 
         .file-info {
             text-align: center;
@@ -293,7 +279,8 @@
             audio: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
             archive: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>`,
             code: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00b894" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
-            other: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#636e72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`
+            other: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#636e72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`,
+            folder: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`
         };
 
         // ============================================
@@ -379,24 +366,22 @@
                 </div>`;
             }
             
-            // Render subfolders
+            // Render subfolders as clickable cards
             const sortedFolders = Array.from(subfolders).sort();
             if (sortedFolders.length > 0) {
                 html += '<div class="files-grid">';
                 sortedFolders.forEach(folderName => {
+                    const folderPath = prefix + folderName;
                     html += `
-                        <div class="file-card folder-card" onclick="navigateTo('${prefix + folderName}')">
+                        <div class="file-card" onclick="navigateTo('${folderPath}')">
                             <div class="file-icon folder">
-                                📁
+                                ${icons.folder}
                             </div>
                             <div class="file-info">
                                 <div class="file-name">${folderName}</div>
                                 <div class="file-meta">
                                     <span>📂 Folder</span>
                                 </div>
-                            </div>
-                            <div class="download-btn" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); cursor: pointer;">
-                                Open
                             </div>
                         </div>
                     `;
