@@ -373,7 +373,7 @@
                 sortedFolders.forEach(folderName => {
                     const folderPath = prefix + folderName;
                     html += `
-                        <div class="file-card" onclick="navigateTo('${folderPath}')">
+                        <div class="file-card">
                             <div class="file-icon folder">
                                 ${icons.folder}
                             </div>
@@ -383,6 +383,9 @@
                                     <span>📂 Folder</span>
                                 </div>
                             </div>
+                            <button onclick="navigateTo('${folderPath}')" class="download-btn" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); margin-top: auto; cursor: pointer; border: none; font-size: 1rem; padding: 12px 24px;">
+                                📂 Open
+                            </button>
                         </div>
                     `;
                 });
